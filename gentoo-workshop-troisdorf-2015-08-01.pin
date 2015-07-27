@@ -1,0 +1,296 @@
+#!/usr/bin/env pinpoint
+# Copyright (C) Sebastian Pipping <sebastian@pipping.org>
+# Licensed under CC-BY-SA-4.0
+
+[rgb45347b.ppm]
+[fill]
+[text-color=white]
+[shading-opacity=0.0]
+
+
+--
+*
+
+
+
+<b><span size='large'>Gentoo Workshop Troisdorf</span></b>
+<i><span size='x-small'><tt>Sebastian Pipping &lt;sping@gentoo.org&gt;</tt></span></i>
+
+<span size='xx-small'>2015-08-01</span>
+
+
+
+
+
+
+
+
+<span size='xx-small'>Version 1.0 | Licensed under CC-BY-SA 4.0</span>
+
+--
+<b>THEMEN</b>
+<span size='10000'> </span>
+◦ Was leisten Ebuilds?
+◦ Ablauf Paketierung
+▸ Demo
+   ◦ Overlay einrichten
+   ◦ Echtes Ebuild entwickeln
+◦ Werbung
+
+
+--
+<b>WAS LEISTEN EBUILDS?</b>
+<i>(Im Vergleich zu "<tt>make install</tt>")</i>
+<span size='20000'> </span>
+◦ Reproduzierbarkeit, "Dokumentation"
+<span size='10000'> </span>
+◦ Deinstallation gratis
+<span size='10000'> </span>
+◦ Unterstützung durch Eclasses
+<span size='10000'> </span>
+◦ Kollaboration mit anderen
+<span size='10000'> </span>
+◦ Weniger Wildwuchs in <tt>/usr/local/</tt>
+
+
+--
+<b>ABLAUF PAKETIERUNG</b>
+<span size='10000'> </span>
+▸ http://gpo.zugaina.org/ checken
+◦ Download URL(s) besorgen
+◦ Ebuild entwickeln
+   ◦ Build-System verstehen
+   ◦ Abhängigkeiten sammeln
+   ◦ Lizenzen ausfindig machen
+   ◦ Patches anfertigen
+◦ Ebuild/Overlay veröffentlichen
+
+
+--
+<b>IM TERMINAL</b>
+
+<tt>mkdir media-sound/cava
+cd media-sound/cava
+cp TEMPLATE cava-0.3.2.ebuild
+while ! ready; do
+   ${EDITOR} cava-0.3.2.ebuild
+   ebuild cava-0.3.2.ebuild \\
+     manifest clean install
+done
+repoman full</tt>
+
+
+--
+<b>EBUILD COMMAND</b>
+<tt>
+\# ebuild cava-0.3.2.ebuild \\
+    manifest [clean] <i>UP_TO_ACTION</i></tt>
+
+
+--
+<b>ACTIONS / EBUILD FUNCTIONS</b>  (Auszug)
+<tt>
+\# ebuild cava-0.3.2.ebuild \\
+    manifest [clean] <i>UP_TO_ACTION</i>
+
+    ACTION        FUNCTION
+\-------------------------------
+1.  setup      ―&gt; pkg_setup
+2.  fetch
+ .  unpack     ―&gt; src_unpack
+ .  prepare    ―&gt; src_prepare
+ .  configure  ―&gt; src_configure
+ .  compile    ―&gt; src_compile
+ .  test       ―&gt; src_test
+8.  install    ―&gt; src_install</tt>
+
+
+--
+<b>MEINE SHELL-FUNKTIONEN</b>
+
+<b>In <tt>~/.bashrc</tt>:</b>
+<tt>emci() {(
+    set -x
+    ebuild "$1" manifest clean install
+)}
+ecmc() {(
+    set -x
+    sudo ebuild "$1" manifest clean merge clean
+)}</tt>
+
+<b>In der Shell:</b>
+<tt>\# emci cava-0.3.2.ebuild</tt>
+
+
+--
+<b>DEMO</b>
+<span size='20000'> </span>
+▸ Git-Overlay anlegen
+<span size='10000'> </span>
+◦ Unpriviligierten User freischalten
+<span size='10000'> </span>
+◦ Ebuild-Template vorstellen
+<span size='10000'> </span>
+◦ cava-Ebuild zum Laufen bekommen
+
+
+--
+<b>ÜBERSICHT ECLASSES</b>  (aktuell 215 Eclasses)
+<span size='20000'> </span>
+◦ Programmiersprachen ― <tt>python*</tt>, <tt>ruby*</tt>, ...
+<span size='10000'> </span>
+◦ Build-Systeme ― <tt>cmake-utils</tt>, <tt>distutils-r1</tt>, ...
+<span size='10000'> </span>
+◦ (Live- und) Snapshot-Ebuilds ― <tt>bzr</tt>, <tt>git-r3</tt>, ...
+<span size='10000'> </span>
+◦ Desktop environments ― <tt>gnome*</tt>, <tt>xfconf</tt>, ...
+<span size='10000'> </span>
+◦ ...
+
+
+--
+<b>SPEZIELLE ERWÄHNUNG VERDIENEN...</b>
+<span size='20000'> </span>
+◦ <tt>autotools       </tt> ― <tt>eautoreconf</tt>
+<span size='10000'> </span>
+◦ <tt>eutils          </tt> ― <tt>epatch</tt>, <tt>make_desktop_entry</tt>
+<span size='10000'> </span>
+◦ <tt>flag-o-matic    </tt> ― Compile flags filtern
+<span size='10000'> </span>
+◦ <tt>games           </tt> ― für Spiele
+<span size='10000'> </span>
+◦ <tt>linux-info      </tt> ― Kernel config abfragen
+<span size='10000'> </span>
+◦ <tt>multilib        </tt> ― <tt>get_libdir</tt> (<tt>lib32</tt>/<tt>lib64</tt>)
+<span size='10000'> </span>
+◦ <tt>toolchain-funcs </tt> ― <tt>tc-get</tt>CC
+<span size='10000'> </span>
+◦ <tt>unpacker        </tt> ― <tt>unpack_deb</tt>
+<span size='10000'> </span>
+◦ <tt>versionator     </tt> ― <tt>get_version_component_range</tt>
+
+
+--
+<b>EBUILD HELPERS</b>  (außerhalb von Eclasses)
+<span size='20000'> </span>
+<tt><b>/usr/lib64/portage/python2.7/ebuild-helpers/*</b>
+die dobin doconfd dodir dodoc doenvd doexe dohard
+doheader dohtml doinfo doinitd doins dolib dolib.a
+dolib.so doman domo dosbin dosed dosym ecompress
+ecompressdir eerror einfo elog emake eqawarn ewarn
+fowners fperms keepdir newbin newconfd newdoc newenvd
+newexe newheader newinitd newins newlib.a newlib.so
+newman newsbin portageq prepall prepalldocs
+prepallinfo prepallman prepallstrip prepinfo prepman
+prepstrip
+<span size='20000'> </span>
+<b>/usr/lib64/portage/python2.7/phase-helpers.sh</b>
+best_version diropts docinto docompress econf
+einstall exeinto exeopts has_version insinto insopts
+into libopts unpack use use_enable useq usev use_with</tt>
+
+
+--
+<b>DEMO</b>
+<span size='10000'> </span>
+◦ cava-Ebuild <i>ernst nehmen</i>
+
+
+--
+<b>HÄUFIGE UPSTREAM-FEHLER</b>
+<span size='20000'> </span>
+◦ Sandbox violations (<tt>$DESTDIR</tt>)
+<span size='10000'> </span>
+◦ Falsche Annahmen über Pfade
+<span size='10000'> </span>
+◦ Downloads während Kompilierung/Tests
+<span size='10000'> </span>
+◦ Gebündelte Abhängigkeiten
+<span size='10000'> </span>
+◦ Feste <tt>CFLAGS</tt>/<tt>LDFLAGS</tt>
+<span size='10000'> </span>
+◦ Parallel make issues (<tt>make -j5</tt>)
+<span size='10000'> </span>
+◦ Ungefragtes Stripping von Binaries
+
+
+--
+<b>DOWNSTREAM <i>DON'T</i>s</b>
+<span size='20000'> </span>
+▸ Niemals beim User Schaden anrichten
+   Fail-Beispiel: <tt>rm -R "${typo}"/lib/</tt>
+<span size='10000'> </span>
+◦ Nicht als <tt>root</tt> Ebuilds entwickeln
+<span size='10000'> </span>
+◦ Keine Tarballs, Bilder oder Binärdateien
+   in Overlays ablegen
+
+
+--
+<b>DEBUGGING</b>
+
+<b>Für eigenen Code:</b>
+Bash-Bordmittel.
+
+<b>Zum Debuggen von Eclasses:</b>
+
+  <tt># ECLASS_DEBUG_OUTPUT=on ebuild ...</tt>
+
+Außerdem geschrieben wird:
+<tt>/var/tmp/portage/${CATEGORY}/${PF}/\
+temp/eclass-debug.log</tt>
+
+
+--
+<b>CHECKLISTE</b>  (für diesen Vortrag)
+<span size='20000'> </span>
+◦ <tt>lddtree</tt> für Abhängigkeiten demonstriert?
+<span size='20000'> </span>
+◦ "<tt>|| die</tt>" und "<tt>nonfatal ..</tt>" erwähnt?
+<span size='20000'> </span>
+◦ Eine Eclass im Texteditor geöffnet?
+<span size='20000'> </span>
+◦ Patch(es) für die Makefile eingebunden?
+<span size='20000'> </span>
+◦ Von Live-Ebuilds abgeraten?
+
+
+--
+<b>WEITERFÜHRENDES MATERIAL</b>
+
+
+Gentoo Development Guide
+https://devmanual.gentoo.org/
+
+Project Sunrise
+https://wiki.gentoo.org/wiki/Project:Sunrise
+
+<tt>#gentoo-dev-help</tt> on Freenode IRC
+
+
+--
+<b>WERBUNG</b>
+<span size='20000'> </span>
+▸ Regelmäßige Updates
+<span size='20000'> </span>
+◦ <tt>app-admin/lib_users</tt>
+<span size='20000'> </span>
+◦ <tt>tmpfs</tt> auf <tt>/var/tmp/portage</tt>
+<span size='20000'> </span>
+◦ <tt>app-portage/porticron</tt>
+<span size='20000'> </span>
+◦ <tt>app-portage/overlint</tt>
+<span size='20000'> </span>
+◦ <tt>dev-util/image-bootstrap::betagarden</tt>
+<span size='20000'> </span>
+◦ <tt>dev-python/pychroot</tt>
+<span size='20000'> </span>
+◦ <tt>dev-util/meld</tt>
+<span size='20000'> </span>
+◦ <tt>x11-misc/grub2-theme-preview</tt>
+<span size='20000'> </span>
+◦ <tt>app-office/pinpoint</tt>
+
+
+--
+<b><span size='xx-large'>FRAGEN!</span></b>
